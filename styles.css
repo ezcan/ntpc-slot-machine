@@ -13,14 +13,14 @@
   --container-max: 1024px;
 
   /* Slot 高度控制（行數 × 行高）*/
-  --slot-lines: 1;                        /* 拉霸建議 1 行 */
+  --slot-lines: 1;                         /* 拉霸建議 1 行 */
   --slot-line-height: 1.6;
   --slot-font-size: clamp(1.125rem, 4vw, 1.5rem);
   --slot-fixed-height: calc(var(--slot-lines) * var(--slot-line-height) * 1em);
 
   /* 版面空間（底部裝飾與 CTA 間距） */
   --banner-h: clamp(80px, 16vw, 160px);
-  --cta-block: 120px;
+  --cta-block: 120px;                      /* CTA 預留高度 */
 }
 
 /* ====== Base ====== */
@@ -40,7 +40,8 @@ body{
   padding-inline: clamp(12px, 4vw, 20px);
 }
 .app-main{
-  min-height: calc(100svh - var(--banner-h) - var(--cta-block) - 88px); /* 約略扣掉 header 高度 */
+  /* 扣掉底部裝飾與 CTA，讓內容至少滿版 */
+  min-height: calc(100svh - var(--banner-h) - var(--cta-block) - 88px);
   display: block;
 }
 
@@ -103,7 +104,7 @@ body{
 }
 .slot-text.school{ color: var(--brand-blue); } /* 中欄更易識別 */
 
-/* 停輪後文字（保留多行截斷邏輯，即使目前為 1 行） */
+/* 停輪後文字 */
 .slot-lines{
   display: -webkit-box;
   -webkit-line-clamp: var(--slot-lines);
@@ -160,7 +161,8 @@ body{
   max-width:420px;
 
   position: fixed;
-  bottom: 8vh;
+  /* 加上 iOS 安全區，避免被手勢列擋住 */
+  bottom: calc(8vh + env(safe-area-inset-bottom, 0px));
   left:50%;
   transform: translateX(-50%);
   z-index: 50;
@@ -169,7 +171,7 @@ body{
 .cta:active{ transform: translateX(-50%) translateY(2px); box-shadow: inset 0 0 8px rgba(0,0,0,.2); }
 .cta:disabled{ filter: grayscale(.3) brightness(.95); }
 
-/* ====== 吉祥物（避開 CTA；跟容器左緣對齊） ====== */
+/* ====== 吉祥物（桌機/平板顯示；手機隱藏） ====== */
 .mascot{
   position: fixed;
   left: max(1rem, calc((100vw - var(--container-max))/2 + 1rem)); /* 與容器左緣對齊 */
@@ -185,4 +187,18 @@ body{
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-8px); }
   100% { transform: translateY(0); }
+}
+
+/* 手機版：直接隱藏吉祥物，並讓 CTA 觸控更舒適 */
+@media (max-width: 767px){
+  .mascot{ display:none; }
+  .cta{
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    width: 92%;
+  }
+  .grid-slots{ gap: .875rem; margin-top: 2rem; }
+  :root{
+    --slot-font-size: clamp(1rem, 4.2vw, 1.25rem); /* 手機字再小一點，避免擠壓 */
+  }
 }
