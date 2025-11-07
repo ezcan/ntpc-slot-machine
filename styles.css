@@ -1,0 +1,188 @@
+/* ====== 色票與參數 ====== */
+:root{
+  /* 顏色 */
+  --brand-green:#47B655; /* 吉祥物綠 */
+  --brand-blue:#32A3DC;  /* Banner藍 */
+  --accent-yellow:#FFE066;
+  --text-1:#333;
+  --text-3:#777;
+  --bg:#FAFAFA;
+  --card:#FFFFFF;
+
+  /* 容器寬（iPad 舞台） */
+  --container-max: 1024px;
+
+  /* Slot 高度控制（行數 × 行高）*/
+  --slot-lines: 1;                        /* 拉霸建議 1 行 */
+  --slot-line-height: 1.6;
+  --slot-font-size: clamp(1.125rem, 4vw, 1.5rem);
+  --slot-fixed-height: calc(var(--slot-lines) * var(--slot-line-height) * 1em);
+
+  /* 版面空間（底部裝飾與 CTA 間距） */
+  --banner-h: clamp(80px, 16vw, 160px);
+  --cta-block: 120px;
+}
+
+/* ====== Base ====== */
+html,body{height:100%;}
+body{
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: 'Inter', system-ui, -apple-system, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+.text-brand-green{ color: var(--brand-green); }
+.text-muted{ color: var(--text-3); }
+
+/* 容器：置中 + 限制最大寬 */
+.app-container{
+  width: min(100%, var(--container-max));
+  margin-inline: auto;
+  padding-inline: clamp(12px, 4vw, 20px);
+}
+.app-main{
+  min-height: calc(100svh - var(--banner-h) - var(--cta-block) - 88px); /* 約略扣掉 header 高度 */
+  display: block;
+}
+
+/* Header（上方漸層） */
+.hero{ background: linear-gradient(90deg, var(--brand-blue), #57c0f0); }
+
+/* 底部裝飾（完整呈現，不裁切） */
+.bottom-banner{
+  position: fixed; left:0; right:0; bottom:0;
+  width:100%;
+  height: var(--banner-h);
+  background: url('banner.png') center bottom / contain no-repeat;
+  opacity:.25;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* 主頁內容預留底部空間，避免被裝飾與 CTA 遮住 */
+.page{
+  position: relative; z-index:1;
+  padding-bottom: calc(var(--banner-h) + var(--cta-block));
+}
+
+/* ====== Slot 卡片 ====== */
+.slot-box{
+  background: var(--card);
+  border: 4px solid var(--brand-blue);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  min-height: 128px;
+  transition: transform .12s ease, box-shadow .12s ease;
+  will-change: transform;
+
+  width:100%;
+  max-width:560px;     /* 三個統一寬度 */
+  margin:0 auto;
+}
+.slot-box:hover{ transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,.10); }
+.slot-box:focus-within{ outline: 3px solid var(--accent-yellow); outline-offset: 2px; }
+.slot-title{ color: var(--brand-blue); font-weight: 700; margin-bottom: .25rem; }
+
+/* 完成高亮（整組 slots-panel 在 JS 加 .done） */
+.slots-panel.done .slot-box{
+  border-color:#FFB800;
+  box-shadow:0 0 12px rgba(255,184,0,.25);
+}
+
+/* ====== 固定高度 + 拉霸滾輪 ====== */
+.slot-text{
+  position: relative;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center; font-weight:700;
+  color: var(--brand-green);
+  font-size: var(--slot-font-size);
+  line-height: var(--slot-line-height);
+  height: var(--slot-fixed-height);
+  padding: 0 .25rem;
+  overflow: hidden;
+}
+.slot-text.school{ color: var(--brand-blue); } /* 中欄更易識別 */
+
+/* 停輪後文字（保留多行截斷邏輯，即使目前為 1 行） */
+.slot-lines{
+  display: -webkit-box;
+  -webkit-line-clamp: var(--slot-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 轉輪容器（JS 注入） */
+.reel{ will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
+.reel-item{
+  height: var(--slot-fixed-height);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700;
+  color: inherit; /* 跟隨父層顏色 */
+  font-size: var(--slot-font-size);
+  line-height: var(--slot-line-height);
+}
+
+/* 無縫循環動畫（A + A → 只滾到 50%） */
+@keyframes reel-spin{ 0%{ transform: translateY(0);} 100%{ transform: translateY(-50%);} }
+.spinning .reel{ animation: reel-spin .30s cubic-bezier(0.35,0,0.65,1) infinite; }
+
+/* 停輪微震感（JS 於 .slot-box 加 .settle 後自動播放） */
+@keyframes settle{ 0%{transform:translateY(0);} 50%{transform:translateY(2px);} 100%{transform:translateY(0);} }
+.slot-box.settle{ animation: settle .1s ease; }
+
+/* 三列垂直、下移一些 */
+.grid-slots{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+/* 動畫可及性 */
+@media (prefers-reduced-motion: reduce){
+  .slot-box{ transition: none; }
+  .slot-box:hover{ transform: none; }
+  .spinning .reel{ animation: none; }
+}
+
+/* ====== CTA 固定底部置中 ====== */
+.cta{
+  background: var(--accent-yellow) !important;
+  color:#3b0147 !important;
+  border-color:#d4a300 !important;
+  font-weight:700;
+  padding:1.25rem 3rem;
+  font-size:1.75rem;
+  min-height:64px;
+
+  width:90%;
+  max-width:420px;
+
+  position: fixed;
+  bottom: 8vh;
+  left:50%;
+  transform: translateX(-50%);
+  z-index: 50;
+}
+.cta:hover{ transform: translateX(-50%) translateY(-2px); }
+.cta:active{ transform: translateX(-50%) translateY(2px); box-shadow: inset 0 0 8px rgba(0,0,0,.2); }
+.cta:disabled{ filter: grayscale(.3) brightness(.95); }
+
+/* ====== 吉祥物（避開 CTA；跟容器左緣對齊） ====== */
+.mascot{
+  position: fixed;
+  left: max(1rem, calc((100vw - var(--container-max))/2 + 1rem)); /* 與容器左緣對齊 */
+  right: auto;
+  bottom: calc(8vh + 6rem);
+  width: 300px;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.15));
+  z-index: 10;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}

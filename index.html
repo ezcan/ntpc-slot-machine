@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新北教育問答拉霸機</title>
+
+  <!-- NES.css -->
+  <link rel="stylesheet" href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- style -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+
+  <!-- 底部 Banner -->
+  <div class="bottom-banner" aria-hidden="true"></div>
+
+  <div class="page">
+
+    <!-- Header -->
+    <header class="hero text-white">
+      <div class="app-container flex items-center gap-3 py-5 md:py-6">
+        <i class="nes-icon trophy is-medium"></i>
+        <h1 class="text-xl md:text-2xl font-extrabold tracking-wide">新北教育問答拉霸機</h1>
+      </div>
+    </header>
+
+    <main class="app-container app-main py-6 md:py-8">
+
+      <h2 class="text-brand-green font-bold text-lg text-center">抽題結果</h2>
+
+      <section class="slots-panel">
+
+        <div class="grid-slots">
+
+          <article class="slot-box">
+            <div class="slot-title">行政區</div>
+            <div id="district-text" class="slot-text">
+              <span class="slot-lines">?</span>
+            </div>
+          </article>
+
+          <article class="slot-box">
+            <div class="slot-title">學校名稱</div>
+            <div id="school-text" class="slot-text school">
+              <span class="slot-lines">?</span>
+            </div>
+          </article>
+
+          <article class="slot-box">
+            <div class="slot-title">指定數據</div>
+            <div id="data-text" class="slot-text">
+              <span class="slot-lines">?</span>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="flex items-center justify-center mt-2">
+          <span id="nextHint" class="text-sm text-brand-green" style="opacity:0;">去找到答案吧 🔍</span>
+        </div>
+
+        <div class="flex items-center justify-center mt-2">
+          <span id="sr-status" class="text-sm text-muted" aria-live="polite"></span>
+        </div>
+
+      </section>
+    </main>
+
+  </div>
+
+  <!-- CTA -->
+  <button id="spin-button" type="button" class="nes-btn cta" aria-pressed="false">
+    出題 🔍
+  </button>
+
+  <!-- Mascot -->
+  <img src="ntpc.png" alt="小幫手" class="mascot" />
+
+  <script src="./schools.js"></script>
+  <script src="./app.js"></script>
+
+</body>
+</html>
