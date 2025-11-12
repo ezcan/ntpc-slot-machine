@@ -141,9 +141,9 @@ body{
 /* ===== 吉祥物（桌機/平板顯示，手機隱藏） ===== */
 .mascot{
   position:fixed;
-  left:max(1rem, calc((100vw - var(--container-max))/2 + 1rem));
-  bottom:calc(8vh + 6rem);
-  width:300px; filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
+  right:max(1rem, calc((100vw - var(--container-max))/2 + 1rem));
+  bottom:calc(8vh + 2rem);
+  width:200px; filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
   z-index:10;
   animation:float 4s ease-in-out infinite;
 }
