@@ -9,7 +9,7 @@ window.schoolData = [
   { district: "三重區", name: "碧華國小" },
   { district: "樹林區", name: "育林國中" },
   { district: "三峽區", name: "介壽國小" },
-  { district: "新店區", name: "莊敬高職" },
+  // { district: "新店區", name: "莊敬高職" },
   { district: "新店區", name: "北新國小" },
   { district: "石碇區", name: "永定國小" },
   { district: "新店區", name: "新店國小" },
